@@ -3,63 +3,77 @@
 import React, { useEffect, useState } from 'react'
 import { getHighDemandCrops } from '@/actions/suggestions'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
-const HighDemandCrops = () => {
+interface Crop {
+  name: string
+  averagePrice: number
+  season: string
+  demandLevel: string
+}
+
+const HighDemandCrop = () => {
   const [loading, setLoading] = useState(true)
-  const [crops, setCrops] = useState<any[]>([])
+  const [crops, setCrops] = useState<Crop[]>([])
   const [error, setError] = useState<string>('')
 
-  useEffect(() => {
-    const fetchCrops = async () => {
-      setLoading(true)
-      const res = await getHighDemandCrops()
-      if (res.error) setError(res.error)
-      else setCrops(res.crops || [])
-      setLoading(false)
+ useEffect(() => {
+  const fetchCrops = async () => {
+    setLoading(true)
+    const res = await getHighDemandCrops()
+    if ('crops' in res) {
+      setCrops(res.crops ?? []) // default to empty array if undefined
+    } else if ('error' in res) {
+      setError(res.error)
     }
-    fetchCrops()
-  }, [])
+    setLoading(false)
+  }
+  fetchCrops()
+}, [])
+
 
   return (
-    <div className="w-full mt-6">
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-green-700 dark:text-green-400">
-        📈 High Demand Crops in Your Area
-      </h2>
-
-      {loading && (
-        <div className="space-y-2">
-          {Array.from({ length: 3 }).map((_, idx) => (
-            <div
-              key={idx}
-              className="h-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
-            />
+    <Card className="w-full mt-6">
+      <CardHeader>
+        <CardTitle className="text-lg sm:text-xl font-semibold">
+          🌾 High Demand Crops in Your Area
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {loading &&
+          Array.from({ length: 4 }).map((_, idx) => (
+            <Skeleton key={idx} className="h-24 w-full rounded-lg" />
           ))}
-        </div>
-      )}
 
-      {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
+        {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
 
-      {!loading && !error && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {crops.map((crop, idx) => (
+        {!loading &&
+          crops.map((crop, idx) => (
             <Card
               key={idx}
-              className="border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-shadow"
+              className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-800 p-4 rounded-lg shadow-sm"
             >
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">{crop.name}</CardTitle>
+                <CardTitle className="text-md sm:text-lg font-semibold">
+                  {crop.name}
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-1">
-                <p>Average Price: {crop.avgPrice}</p>
-                <p>Season: {crop.season}</p>
-                <p>Demand Level: {crop.demand}</p>
+              <CardContent className="text-sm sm:text-base space-y-1">
+                <p>
+                  <span className="font-medium">Avg Price:</span> ₹{crop.averagePrice}
+                </p>
+                <p>
+                  <span className="font-medium">Season:</span> {crop.season}
+                </p>
+                <p>
+                  <span className="font-medium">Demand Level:</span> {crop.demandLevel}
+                </p>
               </CardContent>
             </Card>
           ))}
-        </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 
-export default HighDemandCrops
+export default HighDemandCrop

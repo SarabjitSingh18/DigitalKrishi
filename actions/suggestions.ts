@@ -34,6 +34,13 @@ export async function getSuggestions() {
     }
 }
 
+interface Crop {
+  name: string
+  averagePrice: number
+  season: string
+  demandLevel: string
+}
+
 export async function getHighDemandCrops() {
   const { userId } = await auth()
   if (!userId) return { error: 'Not authenticated' }
@@ -56,11 +63,10 @@ Only output valid JSON.`
       contents: prompt,
     })
 
-    // Safely parse result.text
-    let crops: any[] = []
+    let crops: Crop[] = []
     if (result.text) {
       try {
-        crops = JSON.parse(result.text)
+        crops = JSON.parse(result.text) as Crop[]
       } catch (err) {
         console.error('Failed to parse AI response as JSON:', result.text, err)
       }
