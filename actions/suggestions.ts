@@ -54,8 +54,14 @@ export async function getHighDemandCrops() {
   const prompt = `You are an agricultural assistant. 
 The farmer is located in ${farmer.location} and grows these crops: ${farmer.crops.join(', ')}. 
 Generate a list of the top 4 high demand crops in ${farmer.location} currently. 
-Include the crop name, average market price in INR, season, and demand level in a JSON array. 
-Only output valid JSON.`
+Provide the output strictly in a JSON array with these exact keys:
+- name (string)
+- average_market_price_inr (number, in INR)
+- season (string)
+- demand_level (string: High, Very High, Medium, Low)
+
+Do NOT change key names. Do NOT add any extra text. 
+Do NOT output Markdown code blocks or explanations, only valid JSON.`
 
   try {
     const result = await ai.models.generateContent({
@@ -66,11 +72,20 @@ Only output valid JSON.`
     let crops: Crop[] = []
 
     if (result.text) {
-      // Clean AI output: remove ```json or ``` and trim whitespace
+      // Remove ```json or ``` and trim whitespace
       const cleanedText = result.text.replace(/```json|```/g, '').trim()
 
       try {
-        crops = JSON.parse(cleanedText) as Crop[]
+        // Parse AI response
+        const rawCrops = JSON.parse(cleanedText)
+
+        // Map AI output to consistent Crop type
+        crops = rawCrops.map((c: any) => ({
+          name: c.name || c.crop_name || 'Unknown',
+          average_market_price_inr: c.average_market_price_inr || c.average_price_per_quintle || c.average_prize || 0,
+          season: c.season || 'Unknown',
+          demand_level: c.demand_level || 'Unknown',
+        }))
       } catch (err) {
         console.error('Failed to parse AI response as JSON:', cleanedText, err)
       }
