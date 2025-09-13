@@ -64,11 +64,15 @@ Only output valid JSON.`
     })
 
     let crops: Crop[] = []
+
     if (result.text) {
+      // Clean AI output: remove ```json or ``` and trim whitespace
+      const cleanedText = result.text.replace(/```json|```/g, '').trim()
+
       try {
-        crops = JSON.parse(result.text) as Crop[]
+        crops = JSON.parse(cleanedText) as Crop[]
       } catch (err) {
-        console.error('Failed to parse AI response as JSON:', result.text, err)
+        console.error('Failed to parse AI response as JSON:', cleanedText, err)
       }
     } else {
       console.error('AI returned undefined text:', result)
