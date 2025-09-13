@@ -19,6 +19,7 @@ export const completeOnboarding = async (formData: FormData) => {
     const crops = cropsRaw ? JSON.parse(cropsRaw) : []
 
     const language = formData.get('language') as string
+    console.log(language)
     const location = formData.get('location') as string
 
     // 1️⃣ Update Clerk metadata
@@ -26,7 +27,7 @@ export const completeOnboarding = async (formData: FormData) => {
       publicMetadata: {
         onboardingComplete: true,
         crops,
-        language,
+        preferredLanguage: language,
         location,
       },
     })
