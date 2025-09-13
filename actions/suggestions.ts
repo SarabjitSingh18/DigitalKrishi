@@ -36,9 +36,9 @@ export async function getSuggestions() {
 
 interface Crop {
   name: string
-  averagePrice: number
+  average_market_price_inr: number
   season: string
-  demandLevel: string
+  demand_level: string
 }
 
 export async function getHighDemandCrops() {
@@ -53,7 +53,7 @@ export async function getHighDemandCrops() {
 
   const prompt = `You are an agricultural assistant. 
 The farmer is located in ${farmer.location} and grows these crops: ${farmer.crops.join(', ')}. 
-Generate a list of the top 5 high demand crops in ${farmer.location} currently. 
+Generate a list of the top 4 high demand crops in ${farmer.location} currently. 
 Include the crop name, average market price in INR, season, and demand level in a JSON array. 
 Only output valid JSON.`
 

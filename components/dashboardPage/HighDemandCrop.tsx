@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react'
 import { getHighDemandCrops } from '@/actions/suggestions'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { calcGeneratorDuration } from 'motion/react'
 
 interface Crop {
   name: string
-  averagePrice: number
+  average_market_price_inr: number
   season: string
-  demandLevel: string
+  demand_level: string
 }
 
 const HighDemandCrop = () => {
@@ -22,7 +23,8 @@ const HighDemandCrop = () => {
     setLoading(true)
     const res = await getHighDemandCrops()
     if ('crops' in res) {
-      setCrops(res.crops ?? []) // default to empty array if undefined
+      setCrops(res.crops ?? [])
+      console.log(res) // default to empty array if undefined
     } else if ('error' in res) {
       setError(res.error)
     }
@@ -60,13 +62,15 @@ const HighDemandCrop = () => {
               </CardHeader>
               <CardContent className="text-sm sm:text-base space-y-1">
                 <p>
-                  <span className="font-medium">Avg Price:</span> ₹{crop.averagePrice}
+                  <span className="font-medium">Avg Price:</span> ₹{crop.average_market_price_inr
+}
                 </p>
                 <p>
                   <span className="font-medium">Season:</span> {crop.season}
                 </p>
                 <p>
-                  <span className="font-medium">Demand Level:</span> {crop.demandLevel}
+                  <span className="font-medium">Demand Level:</span> {crop.demand_level}
+
                 </p>
               </CardContent>
             </Card>
