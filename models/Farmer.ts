@@ -6,6 +6,7 @@ export interface IFarmer extends Document{
     phone:string,
     location:string,
     preferredLanguage: string;
+    onboardingComplete: boolean;
     crops:string[]
 }
 const FarmerSchema = new Schema({
@@ -14,6 +15,7 @@ const FarmerSchema = new Schema({
     phone:{type:String},
     location:{type:String},
     preferredLanguage:{type:String, default:"ml-IN"},
+    onboardingComplete: { type: Boolean, default: false },
     crops:[{type:String}]
 
 },{timestamps:true})

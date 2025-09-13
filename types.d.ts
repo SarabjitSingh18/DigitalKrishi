@@ -6,6 +6,11 @@ declare global {
     conn: Connection | null;
     promise: Promise<Connection> | null;
   };
+  interface CustomJwtSessionClaims {
+    metadata: {
+      onboardingComplete?: boolean
+    }
+  }
 }
 
 export {};
