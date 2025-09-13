@@ -80,7 +80,7 @@ const HighDemandCrop = () => {
                   <span className="font-medium">Season:</span> {crop.season}
                 </p>
                 <p className={`${demandColor(crop.demand_level)} font-semibold`}>
-                  <span className="font-medium">Demand Level:</span> {crop.demand_level}
+                  <span className="font-medium">Demand:</span> {crop.demand_level}
                 </p>
               </CardContent>
             </div>
