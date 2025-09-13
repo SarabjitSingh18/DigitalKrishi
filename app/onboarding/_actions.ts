@@ -27,7 +27,7 @@ export const completeOnboarding = async (formData: FormData) => {
       publicMetadata: {
         onboardingComplete: true,
         crops,
-        preferredLanguage: language,
+        language,
         location,
       },
     })
@@ -39,7 +39,7 @@ export const completeOnboarding = async (formData: FormData) => {
       {
         $set: {
           crops,
-          language,
+          preferredLanguage: language,
           location,
           onboardingComplete: true,
         },
