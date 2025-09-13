@@ -51,6 +51,7 @@ const Suggestions = () => {
             {displayedSuggestions.map((line, idx) => (
               <p key={idx}>{line}</p>
             ))}
+            
           </div>
         )}
       </CardContent>
